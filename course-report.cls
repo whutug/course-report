@@ -244,7 +244,7 @@
   }
 \cs_new_protected:Npn \__csrep_set_math_font_libertinus:
   {
-    \setmathfont { LibertinusMath-Regular.otf }
+    \setmathfont { LibertinusMath-Regular.otf } [Scale=MatchLowercase]
   }
 \cs_new_protected:Npn \__csrep_set_math_font_xcharter:
   {
@@ -461,20 +461,20 @@
         \zihao { -3 } \fangsong 
         \hspace* { 2.5cm } 课程编号：\g__csrep_info_csnumber_tl \hfill 课程性质：\g__csrep_info_cstype_tl \hspace* { 2.5cm }
       \group_end:
-      \vfill
+      \vspace { 0pt plus 1.5fill }
       \begin { figure } [ h ]
         \centering
         \includegraphics [ width = 0.5\linewidth ] { \g__csrep_info_badge_tl }
       \end { figure }
-      \vfill
+      \vspace { 0pt plus 1fill }
       \begin { center }
         \vbox:n 
           { 
-            \centering \Huge \g__csrep_info_title_tl \par
+            \centering \leavevmode \Huge \hbox~ spread~ 1em { \g__csrep_info_title_tl } \par
             \sffamily \huge \g__csrep_info_subtitle_tl
           }
       \end { center }
-      \vfill
+      \vspace { 0pt plus 1fill }
       \begin { center }
         \zihao { -2 }
         \begin { tabular } { c c }
@@ -502,7 +502,7 @@
             }
         \end { tabular }
       \end { center }
-      \vfill
+      \vspace { 0pt plus 1.5fill }
       \group_begin:
         \hfill \LARGE \g__csrep_info_date_tl \hfill
       \group_end:
@@ -558,7 +558,11 @@
   {
     language .tl_gset:N        = \g__csrep_code_language_tl,
     language .value_required:n = true,
+    language .code:n           = {
+      \def\kvtcb@minted@language{#1}
+    }
   }
+
 \tl_if_eq:NnF \g__csrep_option_codepkg_tl { none }
   {
     \RequirePackage { tcolorbox }
@@ -627,17 +631,33 @@
         numberstyle      = \footnotesize \color { line_number_color } \ttfamily,
         showspaces       = false,
         showtabs         = false,
-        numbersep        = 5pt,
+        numbersep        = 3pt,
         showstringspaces = false,
         basicstyle       = \small \ttfamily,
         sensitive        = true,
         escapeinside     = {!@}{@!},
       }
+    \exp_args:Nx \lstset { style = common, language = \g__csrep_code_language_tl }
+  }
+\tl_if_eq:NnT \g__csrep_option_codepkg_tl { minted }
+  {
+    \RequirePackage [ outputdir = cache ] { minted }
+    \tcbuselibrary { minted }
+    \setminted {
+      fontsize = \small, 
+      linenos,
+      numbersep=5pt, 
+      escapeinside=||
+    }
+  }
+\tl_if_eq:NnT \g__csrep_option_codepkg_tl { listings }
+  {
     \DeclareTCBListing [ auto~ counter, number~ within = chapter ] { codebox } { O{}~ g~ t\label~ g }
       {
         common,
         enforce~ breakable,
         topsep~ at~ break = -1mm,
+        listing~ engine = listings,
         IfValueTF = { #2 }
           {
             comment~ and~ listing,
@@ -665,6 +685,23 @@
         listing~ options = {},
         #1
       }
+    \DeclareTCBListing [ no~ counter ] { codebox* } { O{}~ g~ }
+      {
+        common,
+        enforce~ breakable,
+        topsep~ at~ break = -1mm,
+        listing~ engine = listings,
+        IfValueTF = { #2 }
+          {
+            comment~ and~ listing,
+            comment = { \sffamily \small ~ #2 }
+          }
+          {
+            listing~ only
+          },
+        listing~ options = {},
+        #1
+      }
     \DeclareTotalTCBox { \codeinline } { O{}~ m }
       {
         colback = back_color, verbatim, colframe = white, left = 0pt, right = 0pt
@@ -675,8 +712,6 @@
   }
 \tl_if_eq:NnT \g__csrep_option_codepkg_tl { minted }
   {
-    \RequirePackage { minted }
-    \tcbuselibrary { minted }
     % 改变行号颜色
     \RenewDocumentCommand { \theFancyVerbLine } { } 
       { \textcolor{ line_number_color } { \footnotesize \ttfamily \arabic { FancyVerbLine } } }
@@ -686,8 +721,6 @@
         enforce~ breakable,
         topsep~ at~ break = -1mm,
         listing~ engine = minted,
-        minted~ language = \g__csrep_code_language_tl,
-        minted~ options = { fontsize = \small, linenos, numbersep=5pt, escapeinside=|| },
         IfValueTF = { #2 }
           {
             comment~ and~ listing,
@@ -711,6 +744,22 @@
               \node [ anchor = south~ east, xshift = -1em, shape = rectangle, draw ] 
                 at ( frame.south~ west ) { \footnotesize \thetcbcounter };
             }
+          },
+        #1
+      }
+    \DeclareTCBListing [ no~ counter ] { codebox* } { O{}~ g~ }
+      {
+        common,
+        enforce~ breakable,
+        topsep~ at~ break = -1mm,
+        listing~ engine = minted,
+        IfValueTF = { #2 }
+          {
+            comment~ and~ listing,
+            comment = { \sffamily \small ~ #2 }
+          }
+          {
+            listing~ only
           },
         #1
       }
