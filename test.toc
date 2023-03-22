@@ -1,5 +1,0 @@
-\contentsline {chapter}{\numberline {Chapter 1\hspace {.3em}}测试章节}{1}{chapter.1}%
-\contentsline {section}{\numberline {\S 1.1}字体测试}{1}{section.1.1}%
-\contentsline {subsection}{\numberline {1.1.1}测试小节}{3}{subsection.1.1.1}%
-\contentsline {chapter}{\numberline {Chapter 2\hspace {.3em}}测试章节二}{5}{chapter.2}%
-\contentsline {chapter}{\numberline {Appendix A\hspace {.3em}}附录}{7}{appendix.A}%
