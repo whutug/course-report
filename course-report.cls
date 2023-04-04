@@ -1,3 +1,20 @@
+%%
+%%  Copyright (C) 2023--2023 WHUTUG <https://github.com/whutug>
+%% 
+%%  This work may be distributed and/or modified under the
+%%  conditions of the LaTeX Project Public License, either
+%%  version 1.3c of this license or (at your option) any later
+%%  version. The latest version of this license is in:
+%% 
+%%    http://www.latex-project.org/lppl.txt
+%% 
+%%  and version 1.3 or later is part of all distributions of
+%%  LaTeX version 2008 or later.
+%% 
+%%  This work has the LPPL maintenance status `maintained'.
+%% 
+%%  The Current Maintainer of this work is Anbo Tao <398943960@qq.com>.
+%%
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{expl3 , xparse , l3keys2e}
 \ProvidesExplClass{course-report}{2023/02/05}{0.1}{course report template}
@@ -275,18 +292,16 @@
     \__csrep_set_cjk_font_songti:nn { Source~ Han~ Serif~ SC }
       { 
         BoldFont      = * ~ Bold,
-        ItalicFont    = FZKai-Z03,
-        AutoFakeSlant = 0.167
+        ItalicFont    = FZKai-Z03
       }
     \__csrep_set_cjk_font_heiti:nn { Source~ Han~ Sans~ SC }
       {
-        BoldFont      = * ~ Bold,
-        AutoFakeSlant = 0.167
+        BoldFont      = * ~ Bold
       }
     \__csrep_set_cjk_font_fangsong:nn { FZFangSong-Z02 }
-      { AutoFakeBold = 4 , AutoFakeSlant = 0.167 }
+      { }
     \__csrep_set_cjk_font_kaishu:nn { FZKai-Z03 }
-      { AutoFakeBold = 4 , AutoFakeSlant = 0.167 }
+      { }
   }
 \cs_new_protected:Npn \__csrep_set_cjk_font_none: { }
 
