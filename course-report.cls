@@ -441,17 +441,26 @@
         \RequirePackage{multicol}
         \renewcommand\cfttocprehook{\begin{multicols}{2}}
         \renewcommand\cfttocposthook{\end{multicols}}
+      },
+
+    two-column-lof .value_forbidden:n = true,
+    two-column-lof .code:n =
+      {
+        \RequirePackage{multicol}
+        \renewcommand\cftlofprehook{\begin{multicols}{2}}
+        \renewcommand\cftlofposthook{\end{multicols}}
+      },
+    
+    two-column-lot .value_forbidden:n = true,
+    two-column-lot .code:n =
+      {
+        \RequirePackage{multicol}
+        \renewcommand\cftlotprehook{\begin{multicols}{2}}
+        \renewcommand\cftlotposthook{\end{multicols}}
       }
   }
 
 %% 封面
-% \bool_if:NTF \g__csrep_option_draft_bool 
-%   {
-%     \RequirePackage [draft] { graphicx }
-%   }
-%   {
-%     \RequirePackage { graphicx }
-%   }
 \RequirePackage { graphicx }
 \tl_new:N \g__csrep_info_csnumber_tl
 \tl_new:N \g__csrep_info_cstype_tl
@@ -560,29 +569,16 @@
 \RequirePackage { tocloft }
 \clist_map_inline:nn { toc , lof , lot }
   {
+    % 目录标题 粗体 1 号
     \tl_set:cn { cft #1 title font } { \hfill \bfseries \zihao { 1 } }
     \tl_set:cn { cftafter #1 title } { \hfill }
-    % 目录标题 黑体 1 号
-    \clist_map_inline:nn { before , after }
-      { \skip_zero:c { cft ##1 #1 title skip } }
+    \skip_set:cn { cftafter #1 titleskip } { \baselineskip }
+    \skip_set:cn { cftbefore #1 titleskip } { \baselineskip }
   }
-\skip_set:Nn \cftaftertoctitleskip { 0.5 \baselineskip }
-\skip_set:Nn \cftbeforetoctitleskip { 0.5 \baselineskip }
 \tl_set:Nn \cftsubsecnumwidth { 1em }
 \tocloftpagestyle { frontpage }
-% \cs_new_protected:Npn \__csrep_make_contents:
-%   {
-%     \__csrep_clear_page:
-%     \pagestyle { frontpage }
-%     \tableofcontents
-%     \thispagestyle { frontpage }
-%     \__csrep_clear_page:
-%   }
 
 %% 文档结构命令
-% \AtBeginDocument{
-%   \addtocontents { toc } { \protect \thispagestyle { frontpage } }
-% }
 \cs_set_protected:Npn \maketitle { \__csrep_make_cover: }
 \cs_set_protected:Npn \cleardoublepage
   {
@@ -621,9 +617,6 @@
     \__csrep_clear_page:
     \bool_gset_false:N \g__csrep_main_matter_bool
   }
-
-
-
 
 
 %% 代码盒子
