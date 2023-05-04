@@ -1,5 +1,5 @@
 %%
-%%  Copyright (C) 2023--2023 WHUTUG <https://github.com/whutug>
+%%  Copyright (C) 2023 WHUTUG <https://github.com/whutug>
 %% 
 %%  This work may be distributed and/or modified under the
 %%  conditions of the LaTeX Project Public License, either
@@ -13,7 +13,7 @@
 %% 
 %%  This work has the LPPL maintenance status `maintained'.
 %% 
-%%  The Current Maintainer of this work is Anbo Tao <398943960@qq.com>.
+%%  The Current Maintainer of this work is Anbo Tao <hgwxtyz6910@gmail.com>.
 %%
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{expl3 , xparse , l3keys2e}
@@ -40,6 +40,7 @@
 \tl_new:N \g__csrep_option_codepkg_tl
 \tl_new:N \g__csrep_option_theme_tl
 \bool_new:N \g__csrep_option_twoside_bool
+\bool_new:N \g__csrep_option_draft_bool
 
 \clist_new:N \g__csrep_option_to_class_clist
 \clist_gset:Nn \g__csrep_option_to_class_clist { fontset = none, a4paper }
@@ -74,6 +75,30 @@
         \bool_gset_true:N    \g__csrep_option_twoside_bool
         \clist_gput_right:Nn \g__csrep_option_to_class_clist { openright, twoside }
       },
+    
+    onecolumn .value_forbidden:n = true,
+    twocolumn .value_forbidden:n = true,
+    onecolumn .code:n            =
+      {
+        \clist_gput_right:Nn \g__csrep_option_to_class_clist { onecolumn }
+      },
+    twocolumn .code:n            =
+      {
+        \clist_gput_right:Nn \g__csrep_option_to_class_clist { twocolumn }
+      },
+    
+    draft-graph .value_forbidden:n = true,
+    draft-graph .code:n            =
+      {
+        \PassOptionsToPackage { draft } { graphicx }
+      },
+
+    draft .value_forbidden:n = true,
+    draft .code:n            =
+      {
+        \bool_gset_true:N \g__csrep_option_draft_bool
+        \clist_gput_right:Nn \g__csrep_option_to_class_clist { draft }
+      }
   }
 \ProcessKeysOptions { csrep / option }
 
@@ -89,21 +114,25 @@
       { \clearpage }
   }
 
-\AtEndPreamble
+
+\tl_if_eq:NnT \g__csrep_option_theme_tl { fancy }
   {
-    \tl_if_eq:NnT \g__csrep_option_theme_tl { fancy }
+    \ctexset
       {
-        \ctexset
+        chapter =
           {
-            section =
-              {
-                name        = { \S },
-                format      = \Large \normalfont \centering,
-                titleformat = \sffamily,
-                nameformat  = \bfseries,
-              },
-            subsubsection/format += \fbox,
-          }
+            number     = \arabic{chapter},
+            beforeskip = 15pt,
+            afterskip  = 25pt,
+          },
+        section =
+          {
+            name        = { \S },
+            format      = \Large \normalfont \centering,
+            titleformat = \sffamily,
+            nameformat  = \bfseries,
+          },
+        subsubsection/format += \fbox,
       }
   }
 
@@ -147,10 +176,10 @@
         \cfoot { -- \ \thepage / \pageref* { LastPage } \ -- }
         \renewcommand { \headrulewidth } { 0pt }
       }
-    \fancypagestyle { tocpage }
+    \fancypagestyle { frontpage }
       {
         \fancyhf { }
-        \cfoot { -- \ \Roman { page } \ -- }
+        \cfoot { -- \ \roman { page } \ -- }
         \renewcommand { \headrulewidth } { 0pt }
       }
     \bool_if:NTF \g__csrep_option_twoside_bool
@@ -159,8 +188,8 @@
           {
             \fancyhf { }
             \renewcommand { \headrulewidth } { 0.5pt }
-            \fancyhead [ CO ] { \nouppercase { \kaishu \leftmark } }
-            \fancyhead [ CE ] { \nouppercase { \kaishu \rightmark } }
+            \fancyhead [ CO ] { { \itshape \leftmark } }
+            \fancyhead [ CE ] { { \itshape \rightmark } }
             \cfoot { -- \ \thepage / \pageref* { LastPage } \ -- }
           }
       }
@@ -169,14 +198,14 @@
           {
             \fancyhf { }
             \renewcommand { \headrulewidth } { 0.5pt }
-            \chead { \nouppercase { \kaishu \leftmark } }
+            \chead { { \itshape \leftmark } }
             \cfoot { -- \ \thepage / \pageref* { LastPage } \ -- }
           }
       }
   }
 \tl_if_eq:NnT \g__csrep_option_theme_tl { plain }
   {
-    \fancypagestyle { tocpage }
+    \fancypagestyle { frontpage }
       { \fancyhf{} \renewcommand { \headrulewidth } { 0pt } }
     \fancypagestyle { fancy }
       { \fancyhf{} \pagestyle { headings } }
@@ -268,12 +297,13 @@
     \setmathfont { XCharter-Math.otf }
   }
 
-\cs_new_protected:Npn \__csrep_set_cjk_font_songti:nn #1#2
+\cs_new_protected:Npn \__csrep_set_cjk_font: {}
+\cs_new_protected:Npn \__csrep_set_cjk_main_font:nn #1#2
   {
     \setCJKmainfont { #1 } [ #2 ]
     \newCJKfontfamily [ zhsong ] \songti { #1 } [ #2 ]
   }
-\cs_new_protected:Npn \__csrep_set_cjk_font_heiti:nn #1#2
+\cs_new_protected:Npn \__csrep_set_cjk_sans_font:nn #1#2
   {
     \setCJKsansfont { #1 } [ #2 ]
     \newCJKfontfamily [ zhhei ] \heiti { #1 } [ #2 ]
@@ -282,44 +312,41 @@
   {
     \newCJKfontfamily [ zhkai ] \kaishu { #1 } [ #2 ]
   }
-\cs_new_protected:Npn \__csrep_set_cjk_font_fangsong:nn #1#2
+\cs_new_protected:Npn \__csrep_set_cjk_mono_font:nn #1#2
   {
     \setCJKmonofont { #1 } [ #2 ]
     \newCJKfontfamily [ zhfs ] \fangsong { #1 } [ #2 ]
   }
-\cs_new_protected:Npn \__csrep_set_cjk_font_sourcefz:
+\cs_new_protected:Npn \__csrep_set_cjk_font_sourcehan:
   {
-    \__csrep_set_cjk_font_songti:nn { Source~ Han~ Serif~ SC }
-      { 
-        BoldFont      = * ~ Bold,
-        ItalicFont    = FZKai-Z03
-      }
-    \__csrep_set_cjk_font_heiti:nn { Source~ Han~ Sans~ SC }
+    \__csrep_set_cjk_main_font:nn { Source~ Han~ Serif~ SC }
       {
-        BoldFont      = * ~ Bold
+        UprightFont    = *-Regular,
+        BoldFont       = *-Bold,
+        ItalicFont     = *-Regular,
+        BoldItalicFont = *-Bold
       }
-    \__csrep_set_cjk_font_fangsong:nn { FZFangSong-Z02 }
-      { }
+    \__csrep_set_cjk_sans_font:nn { Source~ Han~ Sans~ SC }
+      {
+        UprightFont    = *-Regular,
+        BoldFont       = *-Bold,
+        ItalicFont     = *-Regular,
+        BoldItalicFont = *-Bold
+      }
     \__csrep_set_cjk_font_kaishu:nn { FZKai-Z03 }
-      { }
+      {
+        BoldFont       = *,
+        ItalicFont     = *,
+        BoldItalicFont = *
+      }
+    \__csrep_set_cjk_mono_font:nn { FZFangSong-Z02 } 
+      {
+        BoldFont       = *,
+        ItalicFont     = *,
+        BoldItalicFont = *
+      }
   }
 \cs_new_protected:Npn \__csrep_set_cjk_font_none: { }
-
-% 根据系统判断调用中文字体
-\sys_if_platform_windows:TF
-  {
-    \cs_new_protected:Npn \__csrep_set_cjk_font_ctex: { \ctexset{ fontset = windows } }
-  }
-  {
-    \file_if_exist:nTF { /System/Library/Fonts/Menlo.ttc }
-    % 使用 menlo 判断 mac，来自 ctex
-      {
-        \cs_new_protected:Npn \__csrep_set_cjk_font_ctex: { \ctexset{ fontset = mac } }
-      }
-      {
-        \cs_new_protected:Npn \__csrep_set_cjk_font_ctex: { \ctexset{ fontset = fandol } }
-      }
-  }
 
 \keys_define:nn { csrep / style }
   {
@@ -336,10 +363,18 @@
     math-font .initial:n = default,
 
     cjk-font .choices:nn =
-      { sourcefz, ctex, none }
-      { \cs_gset_eq:Nc \__csrep_set_cjk_font: { __csrep_set_cjk_font_ \l_keys_choice_tl : } },
+      { adobe, fandol, founder, mac, macnew, macold, ubuntu, windows, none, sourcehan }
+      { 
+        \tl_if_in:NnTF \l_keys_choice_tl { sourcehan }
+          {
+            \cs_gset_eq:Nc \__csrep_set_cjk_font: { __csrep_set_cjk_font_ \l_keys_choice_tl : }
+          }
+          {
+            \exp_args:Nx \ctexset { fontset = \l_keys_choice_tl } 
+          }
+      },
     cjk-font .value_required:n = true,
-    cjk-font .initial:n = ctex,
+    % cjk-font .initial:n = ctex
   }
 
 \hook_gset_rule:nnnn { begindocument/before } { . } { < } { xeCJK }
@@ -355,57 +390,26 @@
   }
 
 % 其他设置
-\tl_new:N \g__csrep_style_graphics_path_tl
-\tl_new:N \g__csrep_style_punct_tl
-\tl_new:N \g__csrep_style_today_tl
-\bool_new:N \g__csrep_style_enname_bool
-\bool_new:N \g__csrep_style_fullwidth_stop_bool
 \keys_define:nn { csrep / style }
   {
-    graphics-path .tl_gset:N = \g__csrep_style_graphics_path_tl,
+    graphics-path .code:n = { \graphicspath { #1 } },
 
     punct .choices:nn =
       { quanjiao, banjiao, kaiming, CCT }
       { \tl_gset_eq:NN \g__csrep_style_punct_tl \l_keys_choice_tl },
     punct .value_required:n = true,
     punct .initial:n        = quanjiao,
+    punct .code:n = { \ctexset { punct = #1 } },
 
     today .choices:nn =
       { small, big, old }
       { \tl_gset_eq:NN \g__csrep_style_today_tl \l_keys_choice_tl },
     today .value_required:n = true,
     today .initial:n        = small,
+    today .code:n = { \ctexset { today = #1 } },
 
-    enname .bool_set:N = \g__csrep_style_enname_bool,
-    enname .default:n  = true,
-    enname .initial:n  = false,
-
-    fullwidth-stop .bool_set:N = \g__csrep_style_fullwidth_stop_bool,
-    fullwidth-stop .default:n  = true,
-    fullwidth-stop .initial:n  = false,
-  }
-
-\AtEndPreamble
-  {
-    \bool_if:NT \g__csrep_style_fullwidth_stop_bool
-      {
-        \char_set_catcode_active:n { `。 }
-        \char_set_active_eq:nN { `。 } ．
-      }
-    \exp_args:NV \graphicspath \g__csrep_style_graphics_path_tl
-    \exp_args:Nx \ctexset 
-      { 
-        punct          = \g__csrep_style_punct_tl,
-        today          = \g__csrep_style_today_tl,
-
-        chapter =
-          {
-            number     = \exp_not:N \arabic{chapter},
-            beforeskip = 15pt,
-            afterskip  = 25pt,
-          }
-      }
-    \bool_if:NT \g__csrep_style_enname_bool
+    enname .value_forbidden:n = true,
+    enname .code:n = 
       {
         \ctexset
           {
@@ -422,10 +426,32 @@
             part/name       = { Part\space },
             chapter/name    = { Chapter\space },
           }
+      },
+
+    fullwidth-stop .value_forbidden:n = true,
+    fullwidth-stop .code:n =
+      {
+        \char_set_catcode_active:n { `。 }
+        \char_set_active_eq:nN { `。 } ．
+      },
+
+    two-column-toc .value_forbidden:n = true,
+    two-column-toc .code:n =
+      {
+        \RequirePackage{multicol}
+        \renewcommand\cfttocprehook{\begin{multicols}{2}}
+        \renewcommand\cfttocposthook{\end{multicols}}
       }
   }
 
 %% 封面
+% \bool_if:NTF \g__csrep_option_draft_bool 
+%   {
+%     \RequirePackage [draft] { graphicx }
+%   }
+%   {
+%     \RequirePackage { graphicx }
+%   }
 \RequirePackage { graphicx }
 \tl_new:N \g__csrep_info_csnumber_tl
 \tl_new:N \g__csrep_info_cstype_tl
@@ -473,14 +499,17 @@
       \dim_set_eq:NN \parskip \c_zero_dim
       \vspace* { 2cm }
       \group_begin:
-        \zihao { -3 } \fangsong 
+        \zihao { -3 } \ttfamily 
         \hspace* { 2.5cm } 课程编号：\g__csrep_info_csnumber_tl \hfill 课程性质：\g__csrep_info_cstype_tl \hspace* { 2.5cm }
       \group_end:
       \vspace { 0pt plus 1.5fill }
-      \begin { figure } [ h ]
-        \centering
-        \includegraphics [ width = 0.5\linewidth ] { \g__csrep_info_badge_tl }
-      \end { figure }
+      \tl_if_empty:NF \g__csrep_info_badge_tl
+        {
+          \begin { figure } [ h ]
+          \centering
+          \includegraphics [ width = 0.5\linewidth ] { \g__csrep_info_badge_tl }
+          \end { figure }
+        }
       \vspace { 0pt plus 1fill }
       \begin { center }
         \vbox:n 
@@ -540,31 +569,61 @@
 \skip_set:Nn \cftaftertoctitleskip { 0.5 \baselineskip }
 \skip_set:Nn \cftbeforetoctitleskip { 0.5 \baselineskip }
 \tl_set:Nn \cftsubsecnumwidth { 1em }
-\cs_new_protected:Npn \__csrep_make_contents:
+\tocloftpagestyle { frontpage }
+% \cs_new_protected:Npn \__csrep_make_contents:
+%   {
+%     \__csrep_clear_page:
+%     \pagestyle { frontpage }
+%     \tableofcontents
+%     \thispagestyle { frontpage }
+%     \__csrep_clear_page:
+%   }
+
+%% 文档结构命令
+% \AtBeginDocument{
+%   \addtocontents { toc } { \protect \thispagestyle { frontpage } }
+% }
+\cs_set_protected:Npn \maketitle { \__csrep_make_cover: }
+\cs_set_protected:Npn \cleardoublepage
   {
-    \__csrep_clear_page:
-    \tableofcontents
-    \thispagestyle { tocpage }
-    \__csrep_clear_page:
+    \clearpage
+    \if@twoside 
+      \ifodd\c@page\else
+      \begingroup
+        \mbox{}
+        \vspace*{\fill}
+        \thispagestyle{empty}
+        \newpage
+        \if@twocolumn\mbox{}\newpage\fi
+      \endgroup
+      \fi
+    \fi
   }
 
+\bool_new:N \g__csrep_main_matter_bool
 
-\AfterEndPreamble
+\cs_new_protected:Npn \frontmatter
   {
-    \pagestyle { empty }
-    \__csrep_make_cover:
-    \setcounter { page } { 1 }
-    \pagestyle { tocpage }
-    \__csrep_make_contents:
-    \setcounter { page } { 1 }
+    \__csrep_clear_page:
+    \bool_gset_false:N \g__csrep_main_matter_bool
+    \pagenumbering { roman }
+    \pagestyle { frontpage }
+  }
+\cs_new_protected:Npn \mainmatter
+  {
+    \__csrep_clear_page:
+    \bool_gset_true:N \g__csrep_main_matter_bool
+    \pagenumbering { arabic }
     \pagestyle { fancy }
-    \cs_undefine:N \tableofcontents
   }
-% 删除某些命令
-\AtEndPreamble 
-  { 
-    \cs_undefine:N \maketitle 
+\cs_new_protected:Npn \backmatter
+  {
+    \__csrep_clear_page:
+    \bool_gset_false:N \g__csrep_main_matter_bool
   }
+
+
+
 
 
 %% 代码盒子
@@ -656,7 +715,7 @@
   }
 \tl_if_eq:NnT \g__csrep_option_codepkg_tl { minted }
   {
-    \RequirePackage [ outputdir = cache ] { minted }
+    \RequirePackage { minted }
     \tcbuselibrary { minted }
     \setminted {
       fontsize = \small, 
@@ -729,7 +788,7 @@
   {
     % 改变行号颜色
     \RenewDocumentCommand { \theFancyVerbLine } { } 
-      { \textcolor{ line_number_color } { \footnotesize \ttfamily \arabic { FancyVerbLine } } }
+      { \textcolor{ line_number_color } { \tiny \sffamily \arabic { FancyVerbLine } } }
     \DeclareTCBListing [ auto~ counter, number~ within = chapter ] { codebox } { O{}~ g~ t\label~ g }
       {
         common,
@@ -789,15 +848,15 @@
 \AtEndPreamble
   { 
     \tl_if_eq:NnT \g__csrep_option_codepkg_tl { listings }
-    {
-      \tl_if_empty:NTF \g__csrep_code_language_tl
       {
-        \lstset { style = common }
+        \tl_if_empty:NTF \g__csrep_code_language_tl
+        {
+          \lstset { style = common }
+        }
+        {
+          \exp_args:Nx \lstset { style = common, language = \g__csrep_code_language_tl }
+        }
       }
-      {
-        \exp_args:Nx \lstset { style = common, language = \g__csrep_code_language_tl }
-      }
-    }
   }
 
 %% 参考文献
@@ -941,14 +1000,16 @@
           }
           {
             \tl_if_eq:NnTF \g__csrep_bib_style_tl { author-year-numbered }
-              { \printbibliography [ heading = bibnumbered , env = numerical ] }
-              { \printbibliography [ heading = bibnumbered ] }
+              { \printbibliography [ heading = bibintoc , env = numerical ] }
+              { \printbibliography [ heading = bibintoc ] }
           }
       }
   }
 
-\AtEndEnvironment { document }
-  { \__csrep_make_bibliography: }
+\cs_new:Npn \makebibliography { \__csrep_make_bibliography: }
+
+% \AtEndEnvironment { document }
+%   { \__csrep_make_bibliography: }
 
 \keys_define:nn { csrep }
   {

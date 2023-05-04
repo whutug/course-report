@@ -6,7 +6,7 @@
         punct = CCT,
         font = pagella,
         math-font = xcharter,
-        cjk-font = sourcefz,                           % 设置中文字体为思源和方正字体，若未安装请设置为ctex
+        cjk-font = sourcehan,                           % 设置中文字体为思源和方正字体，若未安装请设置为ctex
         today = big,                                   % 大写日期
         enname,                                        % 英文标题
         fullwidth-stop                                 % 英文全角句点
@@ -41,6 +41,14 @@
 % }
 
 \begin{document}
+
+\maketitle
+
+\frontmatter
+
+\tableofcontents
+
+\mainmatter
 
 \chapter{测试章节}
 \section{字体测试}
@@ -103,6 +111,10 @@ int i = 1
 
 \chapter{测试章节二}
 
+\codeinline{C++}{test}
+
+
+\backmatter
 
 \appendix
 \chapter{附录}
