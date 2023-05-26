@@ -1,26 +1,624 @@
-%%
-%% This is file `course-report.cls',
-%% generated with the docstrip utility.
-%%
-%% The original source files were:
-%%
-%% course-report.dtx  (with options: `class')
-%% 
-%%     Copyright (C) 2023 by Anbo Tao <hgwxtyz6910@gmail.com>
-%% 
-%%     This file may be distributed and/or modified under the
-%%     conditions of the LaTeX Project Public License, either
-%%     version 1.3 of this license or (at your option) any later
-%%     version. The latest version of this license is in:
-%% 
-%%     http://www.latex-project.org/lppl.txt
-%% 
-%%     and version 1.3 or later is part of all distributions of
-%%     LaTeX version 2005/12/01 or later.
-%% 
-\NeedsTeXFormat{LaTeX2e}
-\RequirePackage{expl3 , xparse , l3keys2e}
-\ProvidesExplClass{course-report}{2023/02/05}{1.0}{course report template}
+% \iffalse meta-comment
+%
+% Copyright (C) 2023 by Anbo Tao <hgwxtyz6910@gmail.com>
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3 of this license or (at your option) any later
+% version. The latest version of this license is in:
+%
+% http://www.latex-project.org/lppl.txt
+%
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% \fi
+%
+% \iffalse
+%<*driver>
+\ProvidesFile{course-report.dtx}
+%</driver>
+%<class>\NeedsTeXFormat{LaTeX2e}
+%<class>\RequirePackage{expl3 , xparse , l3keys2e}
+%<class>\ProvidesExplClass{course-report}{2023/02/05}{1.0}{course report template}
+%<*driver>
+\documentclass{course-report-doc}
+\begin{document}
+  \DocInput{course-report.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \begin{documentation}
+%
+% \title{\bfseries\LaTeX{} 课程报告模板\footnotemark}
+% \footnotetext[1]{\url{https://github.com/whutug/course-report}}
+%
+% \author{Eliauk\footnotemark}
+% \footnotetext[2]{\url{https://github.com/whutug}}
+%
+% \date{2023/05/26 \quad v1.0}
+%
+% \maketitle
+%
+% \begin{abstract}
+%   本模板是面向没有严格规定格式的课程大作业、结课报告 \LaTeX{} 模板，支持 \meta{key}=\meta{value} 风格的设置，
+%   为封面、页眉页脚、参考文献、字体、代码环境等元素预定义了一些样式并开放了一些接口用于修改。
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{使用说明}
+%
+% \subsection{编译方式}\label{subsec:CompileMethod}
+%
+% 本模板目前仅支持 \XeTeX{} 引擎，假设您的源文件名称为 \file{report.tex}，请在命令行中执行
+% \iffalse
+%<*doccode>
+% \fi
+\begin{lstlisting}
+xelatex report
+\end{lstlisting}
+% \iffalse
+%</doccode>
+% \fi
+% 或者使用 \pkg{latexmk} ：
+% \iffalse
+%<*doccode>
+% \fi
+\begin{lstlisting}
+latexmk -xelatex report
+\end{lstlisting}
+% \iffalse
+%</doccode>
+% \fi
+% 当使用某些选项的时候（例如使用 \pkg{minted} 宏包排版代码），需要执行
+% \iffalse
+%<*doccode>
+% \fi
+\begin{lstlisting}
+xelatex --shell-escape report
+\end{lstlisting}
+% \iffalse
+%</doccode>
+% \fi
+%
+% \subsection{基本用法}
+% 
+% 以下是一份最简单的 \LaTeX{} 文档：
+% \iffalse
+%<*doccode>
+% \fi
+\begin{lstlisting}
+\documentclass{course-report}
+\begin{document}
+  你好，\LaTeX !
+\end{document}
+\end{lstlisting}
+% \iffalse
+%</doccode>
+% \fi
+% 按照 \ref{subsec:CompileMethod}~小节的编译方式，您应该得到一篇 1 页的文章。
+%
+% \subsection{模板选项} \label{subsec:tempopt}
+%
+% 模板选项指的是在选定文档类的时候可指定的选项：
+% \iffalse
+%<*doccode>
+% \fi
+\begin{lstlisting}
+\documentclass[|\meta{options}|]{course-report}
+\end{lstlisting}
+% \iffalse
+%</doccode>
+% \fi
+% 
+% \begin{function}{codepkg}
+%   \begin{syntax}
+%     codepkg = <listings|minted|\default{none}>
+%   \end{syntax}
+%   选择代码宏包。三种选项分别表示使用 \pkg{listings}、\pkg{minted} 和不使用代码宏包。
+% \end{function}
+%
+% \begin{function}{titlestyle}
+%   \begin{syntax}
+%     titlestyle = <plain|\default{center}|lralign>
+%   \end{syntax}  
+%   选择标题样式，\opt{theme} 会影响章节样式和页眉页脚样式。
+%
+%   \opt{plain} 选项即 \cls{ctexrep} 文档类默认的样式，不做任何更改。
+%
+%   \opt{center} 选项的样式如下所示：
+%   \tcbinputlisting{
+%     inputlst={example/titlestyle-center-example}{1,2}
+%   }
+%
+%   \opt{lralign} 选项的样式如下所示：
+%   \tcbinputlisting{
+%     inputlst={example/titlestyle-lralign-example}{1,2}
+%   }
+% \end{function}
+%
+% \begin{function}{zihao}
+%   \begin{syntax}
+%     zihao = <-4|5>
+%   \end{syntax}
+%   设置文章默认字号，该选项将会传递给 \pkg{ctexrep} 文档类。
+% \end{function}
+%
+% \begin{function}{oneside, twoside} 
+%   这两个选项不需要写出 \meta{value}，均会传递给 \cls{ctexrep} 文档类处理。
+%   其中 \opt{twoside} 在本模板中修改为 \opt{twoside} 和 \opt{openright} 的结合。
+%
+%   在双面模式（\opt{twoside}）下，按照惯例，章只从奇数页开始，此时页眉会稍有变化，奇数页的页眉显示当前的章标题，
+%   而偶数页的页眉显示当前的节标题。
+% \end{function}
+%
+% \begin{function}{onecolumn, twocolumn} 
+%   这两个选项不需要写出 \meta{value}，设置文档为单栏或者双栏。
+% \end{function}
+%
+% \begin{function}{draft, draft-graph} 
+%   这两个选项不需要写出 \meta{value}，开启 \opt{draft} 选项后，
+%   文档不会显示插入的图片，取消交叉引用的跳转，并且会将溢出的盒子以黑框标出。
+%   \opt{draft-graph} 选项仅设置不显示插入的图片。
+% \end{function}
+%
+% \subsection{参数设置}
+%
+% \begin{function}{\csrepset}
+%   \begin{syntax}
+%     \cs{csrepset}\marg{键值列表}
+%   \end{syntax}  
+%   本模板提供了一系列选项供用户配置。载入文档类后，可以使用 \cs{csrepset} 命令来
+%   设置本节所提到的所有选项。
+%
+%   \cs{csrepset} 的参数是一个英文逗号分隔的选项列表，列表中的每个选项通常是 \meta{key}=\meta{value}
+%   的形式，也有部分选项不需要 \meta{value} 部分。
+%  
+%   \cs{csrepset} 采用 \LaTeX3 风格的键值设置，键值列表中``=''左右可以添加任意数量的空格，需要注意的是，
+%   键值列表中不允许出现空行。对于包含子选项的选项（如 \opt{info} 和 \opt{style}），下面是一个使用示例：
+% \iffalse
+%<*doccode>
+% \fi
+\begin{lstlisting}
+\csrepset{
+  style = {
+    punct = banjiao,
+    today = big,
+    two-column-toc
+  }, %%注意不要漏掉这里的逗号
+  info = {
+    title    = {GNSS/INS 松组合算法研究},
+    subtitle = {组合导航课程报告},
+    major    = 导航工程
+  }
+}
+\end{lstlisting}
+% \iffalse
+%</doccode>
+% \fi
+%   或者
+% \iffalse
+%<*doccode>
+% \fi
+\begin{lstlisting}
+\csrepset{
+  style/punct   = banjiao,
+  style/today   = big,
+  info/title    = {GNSS/INS 松组合算法研究},
+  info/subtitle = {组合导航课程报告},
+  info/major    = 导航工程
+  style/two-column-toc
+}
+\end{lstlisting}
+% \iffalse
+%</doccode>
+% \fi
+%   注意``/''的前后不能有空格。
+% \end{function}  
+%
+% \subsubsection{报告样式}
+% 
+% \begin{function}{style}
+%   \begin{syntax}
+%     style = \marg{键值列表}
+%     style/\meta{key} = \meta{value}
+%   \end{syntax}
+%   该选项包含很多子项目，用于设置文档的某些样式，具体内容如下。
+% \end{function}
+%
+% \begin{function}{style/font}
+%   \begin{syntax}
+%     font = <times|xits|xcharter|termes|pagella|libertinus|\default{default}>
+%   \end{syntax} 
+%   设置西文罗马字族字体，\opt{default} 表示使用 \XeTeX 引擎默认的字体（即 Latin Modern Roman）。
+%   如要自定义字体，请选择 \opt{default} 选项。
+% \end{function}
+%
+% \begin{function}{style/math-font}
+%   \begin{syntax}
+%     math-font = <xits|xcharter|termes|pagella|libertinus|\default{default}>
+%   \end{syntax}
+%   设置数学字体，\opt{default} 表示使用 \XeTeX 引擎默认的数学字体（即 Latin Modern Math）。
+%   如要自定义字体，请选择 \opt{default} 选项。
+% \end{function}
+%
+% \begin{function}{style/cjk-font}
+%   \begin{syntax}
+%     cjk-font = <adobe|fandol|founder|mac|macnew|macold|ubuntu|windows|none|sourcehan|\default{auto}>
+%   \end{syntax}
+%   设置中文字体，如果不显式设置此选项，将自动使用 \opt{auto}，表示自动自动检测用户使用的操作系统，配置相应的字体，
+%   详细内容见 \pkg{ctex} 宏包文档。\opt{sourcehan} 表示使用思源宋体、思源黑体、
+%   方正楷体和方正仿宋。如要自定义字体，请选择 \opt{none} 选项。
+% \end{function}
+%
+% \begin{function}{style/graphics-path}
+%   \begin{syntax}
+%     graphics-path = \marg{图片路径}
+%   \end{syntax}
+%   设置插图使用的图片路径，每个路径都要使用一对``\texttt{\{\}}''包裹，例如：\\
+%   \verb|graphics-path={{eps/}{tiff/}}|。
+% \end{function}
+%
+% \begin{function}{style/punct}
+%   \begin{syntax}
+%     punct = <\default{quanjiao}|banjiao|kaiming|CCT>
+%   \end{syntax}  
+%   设置标点处理格式，具体描述见 \pkg{ctex} 宏包文档 \cite{ctex}。
+% \end{function}
+%
+% \begin{function}{style/today}
+%   \begin{syntax}
+%     today = <\default{small}|big|old>
+%   \end{syntax}  
+%   设置 \cs{today} 命令的输出格式，具体描述见 \pkg{ctex} 宏包文档。
+% \end{function}
+%
+% \begin{function}{style/enname}
+%   该选项不需要写出 \meta{value}。设置章名、目录名、参考文献名等提示文字为英文，例如将
+%   ``章''显示为``Chapter''。
+% \end{function}
+%
+% \begin{function}{style/fullwidth-stop}
+%   该选项不需要写出 \meta{value}。将文档中的全角空心句点``。''替换为
+%   全角实心句点``．''，这通常用在数学公式较多的文档中。
+% \end{function}
+%
+% \begin{function}{style/two-column-toc,style/two-column-lof,style/two-column-lot}
+%   该选项不需要写出 \meta{value}。分别将目录、图目录、表目录显示为双栏。
+% \end{function}
+%
+% \subsubsection{信息录入}\label{subsub:info}
+%
+% \begin{function}{info}
+%   \begin{syntax}
+%     info = \marg{键值列表}
+%     info/\meta{key} = \meta{value}
+%   \end{syntax}
+%   该选项包含很多子项目，用于设置封面录入的信息，具体内容如下。其中带星号的条目
+%   会放入表格中，是可选的。
+% \end{function}  
+%
+% \begin{function}{info/csnumber}
+%   \begin{syntax}
+%     csnumber = \marg{课程号}
+%   \end{syntax}  
+%   课程编号。
+% \end{function}
+%
+% \begin{function}{info/cstype}
+%   \begin{syntax}
+%     cstype = \marg{课程类型}
+%   \end{syntax}  
+%   课程类型（专业必修、公共必修等）。
+% \end{function}
+%
+% \begin{function}{info/title}
+%   \begin{syntax}
+%     title = \marg{标题}
+%   \end{syntax}  
+%   报告标题。
+% \end{function}
+%
+% \begin{function}{info/subtitle}
+%   \begin{syntax}
+%     subtitle = \marg{副标题}
+%   \end{syntax}  
+%   报告副标题。
+% \end{function}
+%
+% \begin{function}{info/badge}
+%   \begin{syntax}
+%     badge = \marg{图片名}
+%   \end{syntax}  
+%   报告封面校徽图片。
+% \end{function}
+%
+% \begin{function}[EXP]{info/department}
+%   \begin{syntax}
+%     department = \marg{名称}
+%   \end{syntax}  
+%   院系名称。
+% \end{function}
+%
+% \begin{function}[EXP]{info/major}
+%   \begin{syntax}
+%     major = \marg{名称}
+%   \end{syntax}  
+%   专业名称。
+% \end{function}
+%
+% \begin{function}[EXP]{info/teacher}
+%   \begin{syntax}
+%     teacher = \marg{姓名}
+%   \end{syntax}  
+%   教师姓名。
+% \end{function}
+%
+% \begin{function}[EXP]{info/class}
+%   \begin{syntax}
+%     class = \marg{名称}
+%   \end{syntax}  
+%   班级名称。
+% \end{function}
+%
+% \begin{function}[EXP]{info/author}
+%   \begin{syntax}
+%     author = \marg{姓名}
+%   \end{syntax}  
+%   作者姓名。
+% \end{function}
+%
+% \begin{function}[EXP]{info/id}
+%   \begin{syntax}
+%     id = \marg{编号}
+%   \end{syntax}  
+%   学号。
+% \end{function}
+%
+% \begin{function}{info/date}
+%   \begin{syntax}
+%     date = \marg{日期}
+%   \end{syntax}  
+%   日期。
+% \end{function}
+%
+% \begin{function}[EXP]{info/addinfo}
+%   \begin{syntax}
+%     addinfo = \marg{添加项}
+%   \end{syntax}  
+%   表格添加项，使用方法见 \ref{subsec:cover} 小节。
+% \end{function}
+%
+% \subsubsection{参考文献}
+%
+% 本模板所用的参考文献遵循 GB/T 7714---2015 规范。
+%
+% \begin{function}{bib}
+%   \begin{syntax}
+%     bib = \marg{键值列表}
+%     bib/\meta{key} = \meta{value}
+%   \end{syntax}
+%   该选项包含很多子项目，用于设置参考文献的样式，具体内容如下。
+% \end{function}
+%
+% \begin{function}{bib/backend}
+%   \begin{syntax}
+%     backend = <bibtex|\default{biblatex}>
+%   \end{syntax}  
+%   选择参考文献的支持方式，\opt{bibtex} 选项使用 \bibtex 处理参考文献，样式由 \pkg{natbib} 宏包负责，
+%   \opt{biblatex} 选项使用 \biber 处理参考文献，样式由 \pkg{biblatex} 宏包负责。
+%   推荐使用 \opt{biblatex}。
+% \end{function}  
+%
+% \begin{function}{bib/style}
+%   \begin{syntax}
+%     style = <\default{numerical}|author-year|author-year-numbered>
+%   \end{syntax}
+%   设置参考文献样式。\opt{numerical} 和 \opt{author-year} 分别表示顺序编码制和著者-出版年制，
+%   \\\opt{author-year-numbered} 则是在 \opt{author-year} 的基础上添加了序号。
+% \end{function}  
+%
+% \begin{function}{bib/cite-style}
+%   \begin{syntax}
+%     cite-style = <\default{numerical-super}|numerical-inline|author-year>
+%   \end{syntax}
+%   设置引用样式。分别表示上标形式、文内数字形式和著者-出版年形式的引用样式。
+% \end{function}
+%
+% \subsubsection{代码盒子}
+%
+% 本模板基于 \pkg{tcolorbox} 宏包\cite{tcb}预定义了一些代码盒子供排版代码，使用方法见 \ref{subsec:codebox} 小节。在
+% 使用代码盒子相关的选项时，请确保载入了 \pkg{listings} 或者 \pkg{minted} 宏包
+% （见模板选项 \ref{subsec:tempopt} 小节）。
+% \begin{function}{code/language}
+%   \begin{syntax}
+%     language = \marg{语言}
+%   \end{syntax}
+%   选择代码的默认语言。若使用 \pkg{listings} 宏包，则相当于设置了 
+%   \verb!\lstset{language=}!；若使用 \pkg{minted} 宏包，则相当于设置了
+%   代码盒子的 \opt{minted language} 选项，同时使用 \cs{newmintinline} 定义了对应的行内代码命令。
+% \end{function}
+%
+% \begin{function}{code/boxstyle}
+%   \begin{syntax}
+%     boxstyle = <singleframe|fancy|simple|pure>
+%   \end{syntax}
+%   设置代码盒子的样式。
+% \end{function}
+%
+% \subsection{封面}\label{subsec:cover}
+%
+% 下面是一个封面示例：
+% \tcbinputlisting{
+%   listing side comment,
+%   listing file={example/cover-example1},
+%   righthand ratio=0.5,
+%   comment style={raster columns=1,colframe=gray,graphics options={scale=0.5}}
+% }
+% 注意到我们并没有使用 \ref{subsub:info} 小节中的 \opt{teacher} 和 \opt{addinfo} 条目。
+% 接下来演示 \opt{addinfo} 的使用，上面的效果等价于：
+% \tcbinputlisting{
+%   listing side comment,
+%   listing file={example/cover-example2},
+%   righthand ratio=0.5,
+%   comment style={raster columns=1,colframe=gray,graphics options={scale=0.5}}
+% }
+% 当一行内容太多时，利用 \opt{addinfo} 也可以实现分行的效果：
+% \tcbinputlisting{
+%   listing side comment,
+%   listing file={example/cover-example3},
+%   righthand ratio=0.5,
+%   comment style={raster columns=1,colframe=gray,graphics options={scale=0.5}}
+% }
+% 表格横线的宽度由宏 \cs{CellWidth} 决定，初始值是 \verb!0.4\linewidth!。
+% 
+% \subsection{代码盒子}\label{subsec:codebox}
+% 
+% 模板提供了环境 \env{codebox} 作为代码盒子，其是自动编号的，对应的带星号环境
+% \env{codebox*} 不编号。环境有两个可选参数，为方便使用，第一个可选参数使用普通的
+% 中括号包裹，其代表 \pkg{tcolorbox} 宏包中的盒子的可选参数，第二个可选参数为
+% 大括号包裹，代表代码盒子的注释部分。下面是一个示例：
+% \iffalse
+%<*doccode>
+% \fi
+\begin{tcblisting}{
+  bottom = 6pt,
+  middle = 6pt,
+  listing and comment,
+  pdf comment={example/codebox-example1.pdf},
+  comment style={raster columns=1}
+}
+\begin{codebox*}\
+#include <iostream>
+int main()
+{
+    std::cout << "Hello world!";
+    return 0;
+}
+\end{codebox*}
+\end{tcblisting}
+% \iffalse
+%</doccode>
+% \fi 
+% \noindent 需要注意的是，由于代码的第一个字符为``\#''，为避免 \LaTeX 将其识别为参数说明符，
+% 需要在环境后加上一个反斜杠。下面是一个使用不同参数的例子：
+% \iffalse
+%<*doccode>
+% \fi
+\begin{tcblisting}{
+  bottom = 6pt,
+  middle = 6pt,
+  listing and comment,
+  pdf comment={example/codebox-example2.pdf},
+  comment style={raster columns=1}
+}
+\begin{codebox*}[minted language=csharp, minted options={linenos=false}]{
+  这是一段 C\# 代码。
+}
+public readonly record struct GpsTime: IFormattable, IEquatable<GpsTime>
+{
+    public readonly TimeSpan GpsTimeSpan;
+
+    public readonly UtcTime UtcTimePoint
+    {
+        get
+        {
+            var utc = OriginalTimePoint + GpsTimeSpan;
+            utc -= LeapSeconds.FindLeapSeconds(utc);
+            return utc;
+        }
+    }
+}
+\end{codebox*}
+\end{tcblisting}
+% \iffalse
+%</doccode>
+% \fi 
+%
+% \section{宏包依赖}
+%
+% 指定不同的选项会导致宏包的依赖情况有所不同，具体如下：
+% \begin{itemize}
+%   \item 任何情况下，本模板都会调用以下宏包（文档类）：
+%   \begin{itemize}
+%     \item \pkg{expl3}、\pkg{xparse}、\pkg{l3keys2e}，用于构建 \LaTeX3 编程环境。
+%     \item \cls{ctexrep} 文档类，提供中文排版支持。
+%     \item \pkg{etoolbox}，提供一些方便的钩子。
+%     \item \pkg{geometry}，用于调整页面尺寸。
+%     \item \pkg{fancyhdr}，用于处理页眉页脚。
+%     \item \pkg{lastpage}，用于获取文档的总页数。
+%     \item \pkg{xcolor}，提供更多的颜色。
+%     \item \pkg{hyperref}，提供交叉引用、超链接等功能。
+%     \item \pkg{unicode-math}，处理 Unicode 编码的 OpenType 数学字体。
+%     \item \pkg{graphicx}，提供图形插入的接口。
+%     \item \pkg{tocloft}，调整目录页的样式。
+%   \end{itemize}
+%   \item 设置双栏目录的时候，会调用 \pkg{multicol} 宏包。
+%   \item 使用代码环境的时候（\opt{codepkg} 选项不为 \opt{none}），会调用
+%         \pkg{tcolorbox} 宏包。
+%   \item 当 \opt{codepkg=listings} 时会调用 \pkg{listings} 宏包。
+%   \item 当 \opt{codepkg=minted} 时会调用 \pkg{minted} 宏包。
+%   \item 使用 \opt{bib/backend=bibtex} 后，会调用 \pkg{natbib} 宏包，参考文献样式由 \pkg{gbt7714} 宏包提供。
+%   \item 使用 \opt{bib/backend=biblatex} 后，会调用 \pkg{biblatex} 宏包，参考文献样式由 \pkg{biblatex-gb7714-2015} 宏包提供。
+% \end{itemize}
+%
+% \begin{thebibliography}{99}
+% 
+% \bibitem[()]{texbook}
+% \textsc{The \LaTeX3 Project}.
+% \newblock\textit{The LATEX3 Sources} [CP/OL]. (2023-05-22)
+% \urlprefix\url{https://ctan.org/pkg/l3kernel}
+% \urlprefix\CTANurl{编程接口}{macros/latex/contrib/l3kernel/interface3.pdf}
+%
+% \bibitem[()]{ctex}
+% \textsc{CTEX.ORG}.
+% \newblock\textit{\CTeX 宏集手册} [EB/OL]. version 2.5.10, (2022-07-14)
+% \urlprefix\url{https://ctan.org/pkg/ctex}
+% \urlprefix\CTANurl{文档}{language/chinese/ctex/ctex.pdf}
+%
+% \bibitem[()]{xeCJK}
+% \textsc{CTEX.ORG}.
+% \newblock\textit{\pkg{xeCJK} 宏包} [EB/OL]. version 3.9.1, (2022-08-06)
+% \urlprefix\url{https://ctan.org/pkg/xecjk}
+% \urlprefix\CTANurl{文档}{macros/xetex/latex/xecjk/xeCJK.pdf}
+%
+% \bibitem[()]{fduthesis}
+% \textsc{曾祥东}.
+% \newblock\textit{fduthesis：复旦大学论文模板} [EB/OL]. version 0.9, (2023-02-26)
+% \urlprefix\url{https://ctan.org/pkg/fduthesis}
+% \urlprefix\CTANurl{文档}{macros/latex/contrib/fduthesis/fduthesis.pdf}
+%
+% \bibitem[()]{biblatex}
+% \textsc{Lehman P, Kime P, Boruvka A}, et al.
+% \newblock\textit{The \pkg{biblatex} Package} [EB/OL]. version 3.19, (2023-03-05)
+% \urlprefix\url{https://ctan.org/pkg/biblatex}
+% \urlprefix\CTANurl{文档}{macros/latex/contrib/biblatex/doc/biblatex.pdf}
+%
+% \bibitem[()]{gbt7714}
+% \textsc{胡振震}.
+% \newblock\textit{符合 GB/T 7714-2015 标准的 biblatex 参考文献样式} [EB/OL]. version 1.1n, (2023-05-24)
+% \urlprefix\url{https://ctan.org/pkg/biblatex-gb7714-2015}
+% \urlprefix\CTANurl{文档}{macros/latex/contrib/biblatex-contrib/biblatex-gb7714-2015/biblatex-gb7714-2015.pdf}
+%
+% \bibitem[()]{tcb}
+% \textsc{Thomas F. Sturm}.
+% \newblock\textit{\pkg{tcolorbox} 宏包} [EB/OL]. version 6.0.3, (2023-03-17)
+% \urlprefix\url{https://ctan.org/pkg/tcolorbox}
+% \urlprefix\myurl{文档}{macros/latex/contrib/tcolorbox}
+%
+% \end{thebibliography}
+%
+% \clearpage
+% 
+% \end{documentation}
+% 
+% \begin{implementation}
+% 
+% \section{代码实现}
+% 
+%    \begin{macrocode}
 \msg_new:nnn { course-report } { engine-error }
   {
     Engine~ "#1"~ is~ not~ supported!\\\\
@@ -46,7 +644,7 @@
 
 \keys_define:nn { csrep / option }
   {
-    codepkg .choices:nn =
+    codepkg .choices:nn = 
       { listings, minted, none }
       { \tl_gset_eq:NN \g__csrep_option_codepkg_tl \l_keys_choice_tl },
     codepkg .value_required:n = true,
@@ -74,7 +672,7 @@
         \bool_gset_true:N    \g__csrep_option_twoside_bool
         \clist_gput_right:Nn \g__csrep_option_to_class_clist { openright, twoside }
       },
-
+    
     onecolumn .value_forbidden:n = true,
     twocolumn .value_forbidden:n = true,
     onecolumn .code:n            =
@@ -85,7 +683,7 @@
       {
         \clist_gput_right:Nn \g__csrep_option_to_class_clist { twocolumn }
       },
-
+    
     draft-graph .value_forbidden:n = true,
     draft-graph .code:n            =
       {
@@ -113,6 +711,7 @@
       { \clearpage }
   }
 
+
 \tl_if_eq:NnT \g__csrep_option_titlestyle_tl { center }
   {
     \ctexset
@@ -139,7 +738,7 @@
     \ctexset
       {
         part/number = \arabic{part},
-        chapter =
+        chapter = 
           {
             number = \arabic{chapter},
             format = \huge\bfseries\raggedleft,
@@ -160,7 +759,7 @@
 %% 页面格式
 \RequirePackage { geometry, fancyhdr, lastpage }
 \RequirePackage [ dvipsnames ] { xcolor }
-\geometry {
+\geometry { 
   top        = 30mm,
   bottom     = 30mm,
   left       = 25mm,
@@ -238,6 +837,7 @@
     \fancypagestyle { fancy }
       { \fancyhf{} \pagestyle { headings } }
   }
+
 
 %% 定义字体
 
@@ -366,7 +966,7 @@
         ItalicFont     = *,
         BoldItalicFont = *
       }
-    \__csrep_set_cjk_mono_font:nn { FZFangSong-Z02 }
+    \__csrep_set_cjk_mono_font:nn { FZFangSong-Z02 } 
       {
         BoldFont       = *,
         ItalicFont     = *,
@@ -391,7 +991,7 @@
 
     cjk-font .choices:nn =
       { adobe, fandol, founder, mac, macnew, macold, ubuntu, windows, none, sourcehan, auto }
-      {
+      { 
         \tl_if_in:NnTF \l_keys_choice_tl { sourcehan }
         {
           \cs_gset_eq:Nc \__csrep_set_cjk_font: { __csrep_set_cjk_font_ \l_keys_choice_tl : }
@@ -412,15 +1012,17 @@
 
 \hook_gset_rule:nnnn { begindocument/before } { . } { < } { xeCJK }
 
+% 在导言区末加载字体，保证其不被用户配置覆盖
 \AtEndPreamble
   {
-    \RequirePackage [ warnings-off = { mathtools-colon, mathtools-overbracket }, bold-style = ISO ]
+    \RequirePackage [ warnings-off = { mathtools-colon, mathtools-overbracket }, bold-style = ISO ] 
       { unicode-math }
     \__csrep_set_font:
     \__csrep_set_math_font:
     \__csrep_set_cjk_font:
   }
 
+% 其他设置
 \keys_define:nn { csrep / style }
   {
     graphics-path .code:n = { \graphicspath { #1 } },
@@ -440,7 +1042,7 @@
     today .code:n = { \ctexset { today = #1 } },
 
     enname .value_forbidden:n = true,
-    enname .code:n =
+    enname .code:n = 
       {
         \ctexset
           {
@@ -481,7 +1083,7 @@
         \renewcommand\cftlofprehook{\begin{multicols}{2}}
         \renewcommand\cftlofposthook{\end{multicols}}
       },
-
+    
     two-column-lot .value_forbidden:n = true,
     two-column-lot .code:n =
       {
@@ -522,25 +1124,28 @@
     date     .tl_gset:N    = \g__csrep_info_date_tl,
     addinfo  .clist_gset:N = \g__csrep_info_addinfo_clist,
   }
+% 分散对齐函数
 \cs_generate_variant:Nn \tl_map_inline:nn { x n }
 \cs_new:Npn \__csrep_spread:x #1
   { \tl_map_inline:xn { #1 } { ##1 \hfill } \unskip }
-\cs_new_protected:Npn \__csrep_backslash:
+% 添加信息函数
+\cs_new_protected:Npn \__csrep_backslash: 
   {
     \cs_set_eq:NN \\ \tabularnewline
   }
 \cs_new:Npn \__csrep_info_add_tab:nn #1#2
-  {
+  { 
     \tl_if_empty:nTF { #1 }
       {
-        & \centering\__csrep_backslash:\itshape~ #2 \\ [ -1mm ] \cline { 2-2 }
+        & \centering\__csrep_backslash:\itshape~ #2 \\ [ -1mm ] \cline { 2-2 } 
       }
       {
-        \__csrep_spread:x { #1 } ： & \centering\__csrep_backslash:\itshape~ #2 \\ [ -1mm ] \cline { 2-2 }
+        \__csrep_spread:x { #1 } ： & \centering\__csrep_backslash:\itshape~ #2 \\ [ -1mm ] \cline { 2-2 } 
       }
   }
 \cs_generate_variant:Nn \__csrep_info_add_tab:nn { xx }
 \clist_new:N \l__csrep_info_addinfo_tmp_clist
+% 创建封面
 \newlength{\CellWidth}
 \setlength{\CellWidth}{.4\linewidth}
 \cs_new_protected:Npn \__csrep_make_cover:
@@ -552,7 +1157,7 @@
       \hbox{}
       \vspace* { 2cm }
       \group_begin:
-        \zihao { -3 } \ttfamily
+        \zihao { -3 } \ttfamily 
         \hspace* { 2.5cm } 课程编号：\g__csrep_info_csnumber_tl \hfill 课程性质：\g__csrep_info_cstype_tl \hspace* { 2.5cm }
       \group_end:
       \vspace { 0pt plus 1.5fill }
@@ -565,8 +1170,8 @@
         }
       \vspace { 0pt plus 1fill }
       \begin { center }
-        \vbox:n
-          {
+        \vbox:n 
+          { 
             \centering \leavevmode \Huge \hbox~ spread~ 1em { \g__csrep_info_title_tl } \par
             \sffamily \huge \g__csrep_info_subtitle_tl
           }
@@ -588,9 +1193,9 @@
           \tl_if_empty:NF \g__csrep_info_id_tl
             { \__csrep_info_add_tab:xx { 学号 } { \g__csrep_info_id_tl } }
           \clist_if_empty:NF \g__csrep_info_addinfo_clist
-            {
+            { 
               %\__csrep_info_add_tab:xx {} {test}
-              \clist_map_inline:Nn \g__csrep_info_addinfo_clist
+              \clist_map_inline:Nn \g__csrep_info_addinfo_clist 
                 {
                   \clist_gset:Nn \l__csrep_info_addinfo_tmp_clist { ##1 }
                   \__csrep_info_add_tab:xx
@@ -628,7 +1233,7 @@
 \cs_set_protected:Npn \cleardoublepage
   {
     \clearpage
-    \if@twoside
+    \if@twoside 
       \ifodd\c@page\else
       \begingroup
         \mbox{}
@@ -662,6 +1267,7 @@
     \__csrep_clear_page:
     \bool_gset_false:N \g__csrep_main_matter_bool
   }
+
 
 %% 代码盒子
 \tl_new:N \g__csrep_code_language_tl
@@ -697,7 +1303,7 @@
       {
         aboveskip        = 0pt,
         belowskip        = 0pt,
-        numbers          = left,
+        numbers          = left, 
         numberstyle      = \tiny \color { line_number_color } \sffamily,
         showspaces       = false,
         showtabs         = false,
@@ -713,9 +1319,9 @@
     \RequirePackage { minted }
     \tcbuselibrary { minted }
     \setminted {
-      fontsize = \small,
+      fontsize = \small, 
       linenos,
-      numbersep=5pt,
+      numbersep=5pt, 
       escapeinside=||
     }
   }
@@ -812,14 +1418,14 @@
               {
                 overlay =
                 {
-                  \node [ anchor = south~ west, xshift = 1em, shape = rectangle, draw ]
+                  \node [ anchor = south~ west, xshift = 1em, shape = rectangle, draw ] 
                     at ( frame.south~ east ) { \footnotesize \thetcbcounter };
                 }
               }
               {
                 overlay =
                 {
-                  \node [ anchor = south~ east, xshift = -1em, shape = rectangle, draw ]
+                  \node [ anchor = south~ east, xshift = -1em, shape = rectangle, draw ] 
                     at ( frame.south~ west ) { \footnotesize \thetcbcounter };
                 }
               },
@@ -847,7 +1453,7 @@
     \tl_if_eq:NnT \g__csrep_option_codepkg_tl { minted }
       {
         % 改变行号颜色
-        \RenewDocumentCommand { \theFancyVerbLine } { }
+        \RenewDocumentCommand { \theFancyVerbLine } { } 
           { \textcolor{ line_number_color } { \tiny \sffamily \arabic { FancyVerbLine } } }
         \DeclareTCBListing [ auto~ counter, number~ within = chapter ] { codebox } { O{}~ g~ t\label~ g }
           {
@@ -868,14 +1474,14 @@
               {
                 overlay =
                 {
-                  \node [ anchor = south~ west, xshift = 1em, shape = rectangle, draw ]
+                  \node [ anchor = south~ west, xshift = 1em, shape = rectangle, draw ] 
                     at ( frame.south~ east ) { \footnotesize \thetcbcounter };
                 }
               }
               {
                 overlay =
                 {
-                  \node [ anchor = south~ east, xshift = -1em, shape = rectangle, draw ]
+                  \node [ anchor = south~ east, xshift = -1em, shape = rectangle, draw ] 
                     at ( frame.south~ west ) { \footnotesize \thetcbcounter };
                 }
               },
@@ -903,7 +1509,7 @@
           }
         \tl_if_empty:NF \g__csrep_code_language_tl
           {
-            \exp_args:Nx \newmintinline { \g__csrep_code_language_tl }
+            \exp_args:Nx \newmintinline { \g__csrep_code_language_tl } 
               {  }
           }
       }
@@ -920,12 +1526,26 @@
       { singleframe, fancy, simple, pure }
       {
         %\tl_show:N \g__csrep_code_language_tl
-        \tl_gset_eq:NN \g__csrep_code_boxstyle_tl \l_keys_choice_tl
+        \tl_gset_eq:NN \g__csrep_code_boxstyle_tl \l_keys_choice_tl 
         \cs:w __csrep_set_boxstyle_ \tl_use:N \l_keys_choice_tl : \cs_end:
         \__csrep_set_code_box:
       },
     boxstyle .value_required:n = true,
   }
+% \AtEndPreamble
+%   { 
+%     %\tl_show:N \g__csrep_code_language_tl
+%     \tl_if_eq:NnT \g__csrep_option_codepkg_tl { listings }
+%       {
+%         \tl_if_empty:NTF \g__csrep_code_language_tl
+%         {
+%           \lstset { style = common }
+%         }
+%         {
+%           \exp_args:Nx \lstset { style = common, language = \g__csrep_code_language_tl }
+%         }
+%       }
+%   }
 
 %% 参考文献
 \tl_new:N \g__csrep_bib_style_tl
@@ -949,7 +1569,7 @@
       { \tl_gset_eq:NN \g__csrep_bib_style_tl \l_keys_choice_tl },
     style .value_required:n = true,
     style .initial:n        = numerical,
-
+    
     cite-style .choices:nn =
       { numerical-super , numerical-inline , author-year }
       { \tl_gset_eq:NN \g__csrep_bib_cite_style_tl \l_keys_choice_tl },
@@ -957,6 +1577,7 @@
     cite-style .initial:n        = numerical-super,
   }
 
+% biblatex 设置
 \cs_new_protected:Npn \__csrep_bib_biblatex_pre_setup:
   {
     \clist_if_in:nVTF { numerical, author-year, author-year-numbered }
@@ -988,16 +1609,17 @@
 \cs_new_protected:Npn \__csrep_bib_biblatex_post_setup:
   {
     \clist_if_empty:NF \g__csrep_bib_bibliography_clist
-      {
+      { 
         \clist_map_function:NN \g__csrep_bib_bibliography_clist \addbibresource
       }
   }
 
+% bibtex 设置
 \msg_new:nnn { course-report } { cite-style~ invalid }
   {
     In~ the~ case~ of~ option~ ``bib/backend~ =~ bibtex'',\\
     ``bib/cite-style~ =~ #1''~ and~ ``bib/style~ =~ #2''~ cannot~ be~ used~ together!\\
-
+    
     Please~ change~ option~ ``bib/style''~ or~ ``bib/cite-style'',~ or~ use~ ``bib/backend~ =~ biblatex''.
   }
 \cs_new_protected:Npn \__csrep_bib_warning:
@@ -1013,9 +1635,9 @@
       \g__csrep_bib_style_tl
       {
         \tl_if_eq:NnTF \g__csrep_bib_style_tl { numerical }
-          {
-            \RequirePackage [ sort & compress] { gbt7714 }
-            \bibliographystyle { gbt7714-numerical }
+          { 
+            \RequirePackage [ sort & compress] { gbt7714 } 
+            \bibliographystyle { gbt7714-numerical } 
             \clist_if_in:nVTF { numerical-super , numerical-inline }
               \g__csrep_bib_cite_style_tl
               {
@@ -1025,8 +1647,8 @@
               { \__csrep_bib_warning: }
           }
           {
-            \RequirePackage [ sort ] { gbt7714 }
-            \bibliographystyle { gbt7714-author-year }
+            \RequirePackage [ sort ] { gbt7714 } 
+            \bibliographystyle { gbt7714-author-year } 
             \tl_if_eq:NnF \g__csrep_bib_cite_style_tl { author-year }
               { \__csrep_bib_warning: }
           }
@@ -1074,6 +1696,8 @@
 
 \cs_new:Npn \makebibliography { \__csrep_make_bibliography: }
 
+% \AtEndEnvironment { document }
+%   { \__csrep_make_bibliography: }
 
 \keys_define:nn { csrep }
   {
@@ -1085,6 +1709,6 @@
 
 \NewDocumentCommand { \csrepset } { m }
   { \keys_set:nn { csrep } {#1} }
-\endinput
-%%
-%% End of file `course-report.cls'.
+%    \end{macrocode}
+% \clearpage
+% \end{implementation}

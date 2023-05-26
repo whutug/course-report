@@ -1,0 +1,174 @@
+\documentclass[codepkg=minted,titlestyle=lralign]{course-report}
+
+\csrepset{
+    style = {
+        graphics-path = {{figures/}},
+        punct = CCT,
+        font = pagella,
+        math-font = pagella,
+        today = big,
+        enname
+    },
+    info = {
+        csnumber = 123456789,
+        cstype = 专业必修,
+        title = \LaTeX 课程报告模板,
+        subtitle = 副标题,
+        department = 测绘学院,
+        major = 导航工程,
+        badge = logo.pdf,
+        author = Eliauk,
+        id = 202020212022,
+        addinfo = {
+          {组织, WHUTUG}
+        },
+        date = \today
+    },
+    code = {
+      language = cpp,
+      boxstyle = simple
+    },
+    bib = {
+        bibliography = {ref/refs.bib, ref/thu.bib}
+    }
+}
+
+\usepackage{zhlipsum,lipsum}
+
+\begin{document}
+
+\maketitle
+
+\frontmatter
+
+\tableofcontents
+
+\mainmatter
+
+\chapter{中文测试}
+
+\section{测试节}
+
+\zhlipsum[1]
+
+\subsection{测试小节}
+{
+\bfseries
+\zhlipsum[1-4][name=nanshanjing]
+}
+
+\subsubsection{测试小小节}
+
+{
+\itshape  
+\zhlipsum[1-3][name=xiangyu]
+}
+
+\chapter{英文测试}
+
+\section{测试节}
+
+\lipsum[1]
+
+\subsection{测试小节}
+{
+\itshape
+\lipsum[2-5]
+}
+
+\subsubsection{测试小小节}
+{
+\bfseries
+\lipsum[6-7]
+}
+
+\chapter{代码框测试}
+
+\section{测试节}
+
+\begin{codebox}[
+  minted language=csharp
+]{跳秒表。}
+public static class LeapSeconds
+{
+    public readonly static Dictionary<DateTime, int> GpsTimeTable = new() 
+    {
+        {new(2016, 12, 31, 23, 59, 59), 18},
+        {new(2015, 6, 30, 23, 59, 59), 17},   
+        {new(2012, 6, 30, 23, 59, 59), 16},    
+        {new(2008, 12, 31, 23, 59, 59), 15},    
+        {new(2005, 12, 31, 23, 59, 59), 14},    
+        {new(1998, 12, 31, 23, 59, 59), 13},    
+        {new(1997, 6, 30, 23, 59, 59), 12},    
+        {new(1995, 12, 31, 23, 59, 59), 11},    
+        {new(1994, 6, 30, 23, 59, 59), 10},    
+        {new(1993, 6, 30, 23, 59, 59), 9},    
+        {new(1992, 6, 30, 23, 59, 59), 8},    
+        {new(1990, 12, 31, 23, 59, 59), 7},    
+        {new(1989, 12, 31, 23, 59, 59), 6},    
+        {new(1987, 12, 31, 23, 59, 59), 5},    
+        {new(1985, 6, 30, 23, 59, 59), 4},    
+        {new(1983, 6, 30, 23, 59, 59), 3},    
+        {new(1982, 6, 30, 23, 59, 59), 2},    
+        {new(1981, 6, 30, 23, 59, 59), 1},   
+    };
+}
+\end{codebox}
+
+\begin{codebox}
+public static double Solve(double initialValue, double tolerance, int maxIterationNum, Func<double, double> funtion, Func<double, double> derivativeFunction)
+{
+    double xPre = initialValue;
+    double xCur = initialValue - funtion(initialValue) / derivativeFunction(initialValue);
+    int count = 0;
+    while (System.Math.Abs(xCur - xPre) > tolerance)
+    {
+        xPre = xCur;
+        count++;
+        xCur -= funtion(xCur) / derivativeFunction(xCur);
+        if (count > maxIterationNum)
+            break;
+    }
+    return xCur;
+}
+\end{codebox}
+
+\begin{codebox*}{
+  大地椭球。
+}
+template<CoordinateSystem T>
+struct Elliposid;
+
+template<>
+struct Elliposid<CoordinateSystem::CGCS2000>
+{
+    constexpr static double semi_minor     = 6356752.3141403558;
+    constexpr static double semi_major     = 6378137;
+    constexpr static double oblateness     = 1.0 / 298.2572221010042;
+    constexpr static double eccentricity_1 = 0.081819191042811;
+    constexpr static double eccentricity_2 = 0.0820944381519236;
+};
+\end{codebox*}
+
+\begin{codebox*}
+template<class T>
+class ErrorDetector;
+
+template<>
+class ErrorDetector<Range>
+{
+public:
+    ErrorDetector(): preRange() { }
+    void ErrorDetect(Range& curRange);
+private:
+    Range preRange;
+};
+\end{codebox*}
+
+\backmatter
+
+\nocite{*}
+
+\makebibliography
+
+\end{document}

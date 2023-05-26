@@ -1,0 +1,30 @@
+\documentclass[codepkg=minted]{course-report}
+
+\csrepset{
+  code/boxstyle=pure,
+  code/language=cpp
+}
+
+\usepackage[active,tightpage]{preview}
+
+\PreviewEnvironment{codebox*}
+\PreviewBorder=0pt
+
+\begin{document}
+\begin{codebox*}[minted language=csharp, minted options={linenos=false}]{这是一段 C\# 代码。}
+public readonly record struct GpsTime: IFormattable, IEquatable<GpsTime>
+{
+    public readonly TimeSpan GpsTimeSpan;
+
+    public readonly UtcTime UtcTimePoint
+    {
+        get
+        {
+            var utc = OriginalTimePoint + GpsTimeSpan;
+            utc -= LeapSeconds.FindLeapSeconds(utc);
+            return utc;
+        }
+    }
+}
+\end{codebox*}
+\end{document}

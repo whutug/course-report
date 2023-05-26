@@ -1,0 +1,22 @@
+\documentclass[codepkg=minted]{course-report}
+
+\csrepset{
+  code/boxstyle=pure,
+  code/language=cpp
+}
+
+\usepackage[active,tightpage]{preview}
+
+\PreviewEnvironment{codebox*}
+\PreviewBorder=0pt
+
+\begin{document}
+\begin{codebox*}\
+#include <iostream>
+int main()
+{
+    std::cout << "Hello world!";
+    return 0;
+}
+\end{codebox*}
+\end{document}
