@@ -103,6 +103,16 @@
 
 \PassOptionsToPackage { no-math } { fontspec }
 
+% 消除 CJK 警告
+\RequirePackage { filehook }
+\AtEndOfPackageFile* { fontspec }
+  { \msg_redirect_name:nnn { fontspec } { no-script } { none } }
+\AtEndOfPackageFile* { xeCJK }
+  {
+    \msg_redirect_name:nnn { xeCJK } { CJKfamily-redef } { none }
+    \defaultCJKfontfeatures { Script  = CJK }
+  }
+
 \PassOptionsToClass { \g__csrep_option_to_class_clist } { ctexrep }
 \LoadClass { ctexrep }
 
