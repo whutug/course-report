@@ -427,6 +427,27 @@ xelatex --shell-escape report
 %   设置引用样式。分别表示上标形式、文内数字形式和著者-出版年形式的引用样式。
 % \end{function}
 %
+%
+% \subsubsection{英文环境}
+% 
+% 本模版基于 \pkg{zhlineskip} 宏包，定义了 \env{english} 环境用于“中文中插入成段的英文”的排版需求，使得英文有合理的行间距，这样一来，正文（也许是中英交替的译文）就会有比较均匀的视觉密度，而不至于“中文很挤、英文很散”。
+%
+% \begin{function}[added = 2023-05-28]{english}
+%  \begin{syntax}
+%    \begin{english}
+%      (*\meta{content}*)
+%    \end{english}
+%  \end{syntax}
+% \end{function}
+%
+% 下面是一个使用示例：
+% \tcbinputlisting{
+%   listing side comment,
+%   listing file={example/english-paragraph-example},
+%   righthand ratio=0.5,
+%   comment style={raster columns=1,colframe=gray,graphics options={scale=0.5}}
+% }
+% 
 % \subsubsection{代码盒子}
 %
 % 本模板基于 \pkg{tcolorbox} 宏包\cite{tcb}预定义了一些代码盒子供排版代码，使用方法见 \ref{subsec:codebox} 小节。在
@@ -701,8 +722,26 @@ public readonly record struct GpsTime: IFormattable, IEquatable<GpsTime>
 
 \PassOptionsToPackage { no-math } { fontspec }
 
+%% 消除 CJK 警告
+\RequirePackage { filehook }
+\AtEndOfPackageFile* { fontspec }
+  { \msg_redirect_name:nnn { fontspec } { no-script } { none } }
+\AtEndOfPackageFile* { xeCJK }
+  {
+    \msg_redirect_name:nnn { xeCJK } { CJKfamily-redef } { none }
+    \defaultCJKfontfeatures { Script  = CJK }
+  }
+\RequirePackage { xeCJKfntef }
+
 \PassOptionsToClass { \g__csrep_option_to_class_clist } { ctexrep }
 \LoadClass { ctexrep }
+
+% 配置西文段落环境
+\RequirePackage { zhlineskip }
+\NewDocumentEnvironment { english } {}
+  { \addvspace\medskipamount }
+  { \par\addvspace\medskipamount }
+\RestoreTextEnvironmentLeading { english }
 
 \cs_new_protected:Npn \__csrep_clear_page:
   {

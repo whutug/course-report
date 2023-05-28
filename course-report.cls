@@ -113,8 +113,17 @@
     \defaultCJKfontfeatures { Script  = CJK }
   }
 
+
 \PassOptionsToClass { \g__csrep_option_to_class_clist } { ctexrep }
 \LoadClass { ctexrep }
+
+
+% 配置西文段落环境
+\RequirePackage { zhlineskip }
+\NewDocumentEnvironment { english } {}
+  { \addvspace\medskipamount }
+  { \par\addvspace\medskipamount }
+\RestoreTextEnvironmentLeading { english }
 
 \cs_new_protected:Npn \__csrep_clear_page:
   {
