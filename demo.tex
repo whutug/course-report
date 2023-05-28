@@ -1,39 +1,41 @@
-\documentclass[codepkg=minted,titlestyle=lralign]{course-report}
+\documentclass[codepkg = minted, titlestyle = lralign]{course-report}
 
 \csrepset{
     style = {
         graphics-path = {{figures/}},
-        punct = CCT,
-        font = pagella,
-        math-font = pagella,
-        today = big,
+        punct         = CCT,
+        font          = pagella,
+        math-font     = pagella,
+        today         = big,
         enname
     },
     info = {
-        csnumber = 123456789,
-        cstype = 专业必修,
-        title = \LaTeX 课程报告模板,
-        subtitle = 副标题,
+        csnumber   = 123456789,
+        cstype     = 专业必修,
+        title      = \LaTeX 课程报告模板,
+        subtitle   = 副标题,
         department = 测绘学院,
-        major = 导航工程,
-        badge = logo.pdf,
-        author = Eliauk,
-        id = 202020212022,
-        addinfo = {
+        major      = 导航工程,
+        badge      = logo.pdf,
+        author     = Eliauk,
+        id         = 202020212022,
+        date       = \today,
+        addinfo    = {
           {组织, WHUTUG}
-        },
-        date = \today
+        }
     },
     code = {
       language = cpp,
       boxstyle = simple
     },
     bib = {
-        bibliography = {ref/refs.bib, ref/thu.bib}
+      bibliography = {ref/refs.bib, ref/thu.bib}
     }
 }
 
 \usepackage{zhlipsum,lipsum}
+
+
 
 \begin{document}
 
@@ -52,42 +54,63 @@
 \zhlipsum[1]
 
 \subsection{测试小节}
+
 {
-\bfseries
-\zhlipsum[1-4][name=nanshanjing]
+  \bfseries
+  \zhlipsum[1-4][name = nanshanjing]
 }
+
 
 \subsubsection{测试小小节}
 
 {
-\itshape  
-\zhlipsum[1-3][name=xiangyu]
+  \itshape  
+  \zhlipsum[1-3][name = xiangyu]
 }
+
+
 
 \chapter{英文测试}
 
 \section{测试节}
 
-\lipsum[1]
+\zhlipsum[1]
+\begin{english}
+  \lipsum[1]
+\end{english}
+\zhlipsum[1]
+
 
 \subsection{测试小节}
-{
-\itshape
-\lipsum[2-5]
-}
+
+\zhlipsum[1]
+
+\begin{english}
+  \itshape
+  \lipsum[2-5]
+\end{english}
+
+\zhlipsum[1]
+
 
 \subsubsection{测试小小节}
-{
-\bfseries
-\lipsum[6-7]
-}
+
+\zhlipsum[1]
+
+\begin{english}
+  \bfseries
+  \lipsum[6-7]
+\end{english}
+
+\zhlipsum[1]
+
 
 \chapter{代码框测试}
 
 \section{测试节}
 
 \begin{codebox}[
-  minted language=csharp
+  minted language = csharp
 ]{跳秒表。}
 public static class LeapSeconds
 {
